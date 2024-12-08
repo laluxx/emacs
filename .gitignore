@@ -2,6 +2,7 @@ auto-save-list
 eln-cache
 elpa
 history
+.lsp-session-v1
 places
 recentf
 transient

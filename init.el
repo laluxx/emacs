@@ -15,7 +15,7 @@
 ;; and custom line background depending if it is an error warning or success
 ;; use the correct faces, on the left show an icon for each of the 3
 
-;; TODO M-j in 'ewm' should make sure to focus the popup if there is one
+;; TODO M-j in 'ewm' should make sure to focus the popup if there is one (or the other popup)
 ;; TODO dired-undo
 ;; TODO trash-ring insert from the trash like it was a kill-ring
 ;; TODO Now i have to make a mode for 0x0.st too 💀
@@ -125,6 +125,144 @@
           (update-pulsing-cursor-color))
       (setq laluxx/current-theme 'ewal-doom-one) ;; Set the current theme variable
       (laluxx/save-current-theme)))))
+
+(defun laluxx/add-or-update-alist (alist-var key value)
+  "Add or update KEY with VALUE in ALIST-VAR.
+If KEY exists, its value is updated to VALUE.
+If KEY doesn't exist, a new entry is added.
+Returns the updated value."
+  (setf (alist-get key (symbol-value alist-var)) value))
+
+
+;; TODO Make me into a package
+;; TODO when we are in dired and there is a .git directory show information at the bottom like dired-auto-readme does 
+
+(use-package nerd-icons
+  :ensure t
+  :config
+  (global-set-key (kbd "C-x 8 n") 'nerd-icons-insert)
+
+  (laluxx/add-or-update-alist 'nerd-icons-dir-icon-alist
+                              "\\.git"
+                              '(nerd-icons-codicon "nf-cod-github_alt" :face font-lock-comment-face :weight bold))
+  
+  (laluxx/add-or-update-alist 'nerd-icons-extension-icon-alist
+                              "diff"
+                              '(nerd-icons-octicon "nf-oct-diff" :face nerd-icons-green))
+
+  ;; By name
+  (laluxx/add-or-update-alist 'nerd-icons-regexp-icon-alist
+                              "^places$"
+                              '(nerd-icons-faicon "nf-fa-arrow_pointer" :face default))
+  (laluxx/add-or-update-alist 'nerd-icons-regexp-icon-alist
+                              "^recentf$"
+                              '(nerd-icons-faicon "nf-fa-file_arrow_up" :face default))
+  (laluxx/add-or-update-alist 'nerd-icons-regexp-icon-alist
+                              "^history$"
+                              '(nerd-icons-mdicon "nf-md-progress_clock" :face nerd-icons-blue-alt))
+
+
+
+  (laluxx/add-or-update-alist 'nerd-icons-extension-icon-alist
+                              "jade"
+                              '(nerd-icons-pomicon "nf-pom-external_interruption" :face nerd-icons-yellow))
+
+  (laluxx/add-or-update-alist 'nerd-icons-mode-icon-alist
+                              'dired-mode
+                              '(nerd-icons-mdicon "nf-md-folder" :face nerd-icons-yellow))
+
+
+  (laluxx/add-or-update-alist 'nerd-icons-mode-icon-alist
+                              'erc-mode
+                              '(nerd-icons-mdicon "nf-md-chat_processing"))
+
+  (laluxx/add-or-update-alist 'nerd-icons-mode-icon-alist
+                              'hexl-mode
+                              '(nerd-icons-mdicon "nf-md-hexadecimal" :face nerd-icons))
+
+  (laluxx/add-or-update-alist 'nerd-icons-mode-icon-alist
+                              'objdump-mode
+                              '(nerd-icons-faicon "nf-fae-hexagon" :face nerd-icons-red))
+
+  (laluxx/add-or-update-alist 'nerd-icons-mode-icon-alist
+                              'haskell-interactive-mode
+                              '(nerd-icons-faicon "nf-fa-undo" :face nerd-icons-red))
+
+
+  (defun project-main-language (dir)
+    "Detect main language of project in DIR."
+    (cond
+     ;; Systems languages
+     ((directory-files dir nil "\\.\\(c\\|h\\)$") 'c)
+     ((directory-files dir nil "\\.\\(cpp\\|hpp\\)$") 'cpp)
+     ((directory-files dir nil "\\.rs$") 'rust)
+     ((file-exists-p (expand-file-name "go.mod" dir)) 'go)
+     ((directory-files dir nil "\\.zig$") 'zig)
+     ;; Lisps
+     ((directory-files dir nil "\\.el$") 'elisp)
+     ((directory-files dir nil "\\.clj$") 'clojure)
+     ((directory-files dir nil "\\.rkt$") 'racket)
+     ;; Functional
+     ((directory-files dir nil "\\.hs$") 'haskell)
+     ((directory-files dir nil "\\.ml$") 'ocaml)
+     ;; Scripting
+     ((directory-files dir nil "\\.py$") 'python)
+     ((directory-files dir nil "\\.rb$") 'ruby)
+     ((directory-files dir nil "\\.lua$") 'lua)
+     ((or (directory-files dir nil "\\.js$")
+          (file-exists-p (expand-file-name "package.json" dir))) 'javascript)
+     ((directory-files dir nil "\\.ts$") 'typescript)
+     ;; JVM
+     ((directory-files dir nil "\\.java$") 'java)
+     ((directory-files dir nil "\\.scala$") 'scala)
+     ((directory-files dir nil "\\.kt$") 'kotlin)
+     ;; Others
+     ((directory-files dir nil "\\.cr$") 'crystal)
+     ((directory-files dir nil "\\.ex$") 'elixir)
+     ((directory-files dir nil "\\.nim$") 'nim)
+     (t 'default)))
+
+  (defun get-language-face (lang)
+    "Get face color based on project LANG."
+    (pcase lang
+      ;; Systems Languages
+      ('c 'nerd-icons-blue)          ; C
+      ('cpp 'nerd-icons-dblue)       ; C++
+      ('rust 'nerd-icons-dred)       ; Rust
+      ('go 'nerd-icons-lcyan)        ; Go
+      ('zig 'nerd-icons-yellow)      ; Zig
+      ('elisp 'nerd-icons-purple)    ; Emacs Lisp
+      ('clojure 'nerd-icons-lgreen)  ; Clojure
+      ('racket 'nerd-icons-red)      ; Racket
+      ('haskell 'nerd-icons-lpurple) ; Haskell
+      ('ocaml 'nerd-icons-dorange)   ; OCaml
+      ('python 'nerd-icons-dgreen)   ; Python
+      ('ruby 'nerd-icons-red)        ; Ruby
+      ('lua 'nerd-icons-blue)        ; Lua
+      ('javascript 'nerd-icons-yellow) ; JavaScript
+      ('typescript 'nerd-icons-lblue) ; TypeScript
+      ('java 'nerd-icons-dmaroon)    ; Java
+      ('scala 'nerd-icons-dred)      ; Scala
+      ('kotlin 'nerd-icons-lpurple)  ; Kotlin
+      ('crystal 'nerd-icons-silver)  ; Crystal
+      ('elixir 'nerd-icons-dpurple)  ; Elixir
+      ('nim 'nerd-icons-lyellow)     ; Nim
+      (_ 'nerd-icons-orange)))       ; Default - Orange
+
+  (defun git-directory-p (dir)
+    "Check if DIR has a .git subdirectory."
+    (file-exists-p (expand-file-name ".git" dir)))
+
+  (advice-add 'nerd-icons-icon-for-dir :around
+              (lambda (orig-fn dir &rest args)
+                (if (and dir (git-directory-p dir))
+                    (apply #'nerd-icons-octicon "nf-oct-package" 
+                           :face (get-language-face (project-main-language dir)) 
+                           args)
+                  (apply orig-fn dir args))))
+
+  )
+
 
 
 ;;; EDITING
@@ -494,7 +632,6 @@ For .lisp files, use custom Lisp interpreter, otherwise use default compile-comm
 ;;             corfu-auto-prefix 1 ;; TOO SMALL - NOT RECOMMENDED
 ;;             completion-styles '(basic))
 
-
 (use-package nerd-icons-corfu
   :ensure t
   :config
@@ -752,6 +889,24 @@ tell you about it. Very annoying. This prevents that."
 
 (global-set-key (kbd "C-x C-l") 'laluxx/dired-jump-or-kill)
 
+(defun laluxx/dired-move-marks-inside-here ()
+  "Move all marked files in dired to the directory at point."
+  (interactive)
+  (let* ((marks (dired-get-marked-files))
+         (dir (dired-get-filename))
+         (target (file-name-as-directory dir)))
+    (if (not (file-directory-p dir))
+        (error "Target is not a directory")
+      (dolist (marked marks)
+        (let ((new-name (expand-file-name 
+                         (file-name-nondirectory marked) 
+                         target)))
+          (dired-rename-file marked new-name nil)))
+      ;; Revert the buffer to show the new state
+      (revert-buffer))))
+
+(define-key dired-mode-map (kbd "C-c m") 'laluxx/dired-move-marks-inside-here)
+
 
 (defun laluxx/dired-copy-file-content ()
   "Copy the contents of the file at point in Dired to the clipboard."
@@ -832,6 +987,23 @@ tell you about it. Very annoying. This prevents that."
   (wdired-change-to-wdired-mode)
   (laluxx/kill-word))
 
+(defun laluxx/dired-smart-up ()
+  "If there are marked files, move them to parent directory.
+If no files are marked, just go up to parent directory."
+  (interactive)
+  (let ((marked-files (dired-get-marked-files nil nil nil t)))
+    (if (eq (car marked-files) t)  ; No marks
+        (dired-up-directory)
+      (let* ((marks (dired-get-marked-files))
+             (dir (directory-file-name default-directory))
+             (target (file-name-directory dir)))
+        (dolist (marked marks)
+          (let ((new-name (expand-file-name 
+                           (file-name-nondirectory marked) 
+                           target)))
+            (dired-rename-file marked new-name nil)))
+        (revert-buffer)))))
+
 (defun laluxx/dired-mode-setup ()
   "Custom keybindings and settings for `dired-mode`."
   ;; (define-key dired-mode-map (kbd "TAB") 'dired-subtree-toggle)
@@ -840,6 +1012,7 @@ tell you about it. Very annoying. This prevents that."
   (define-key dired-mode-map (kbd "j") 'dired-next-line)
   (define-key dired-mode-map (kbd "k") 'dired-previous-line)
   (define-key dired-mode-map (kbd "h") 'dired-up-directory)
+  ;; (define-key dired-mode-map (kbd "h") 'laluxx/dired-smart-up)
   (define-key dired-mode-map (kbd "l") 'dired-find-file)
   (define-key dired-mode-map (kbd "y") 'laluxx/dired-copy-file-content)
   (define-key dired-mode-map (kbd "i") 'wdired-change-to-wdired-mode)
@@ -905,50 +1078,10 @@ tell you about it. Very annoying. This prevents that."
 (use-package theme-magic
   :ensure t)
 
-(defun laluxx/add-or-update-alist (alist-var key value)
-  "Add or update KEY with VALUE in ALIST-VAR.
-If KEY exists, its value is updated to VALUE.
-If KEY doesn't exist, a new entry is added.
-Returns the updated value."
-  (setf (alist-get key (symbol-value alist-var)) value))
-
-(use-package nerd-icons
-  :ensure t
-  :config
-  (global-set-key (kbd "C-x 8 n") 'nerd-icons-insert)
-
-  (laluxx/add-or-update-alist 'nerd-icons-extension-icon-alist
-                              "diff"
-                              '(nerd-icons-octicon "nf-oct-diff" :face nerd-icons-green))
-
-  (laluxx/add-or-update-alist 'nerd-icons-extension-icon-alist
-                              "jade"
-                              '(nerd-icons-pomicon "nf-pom-external_interruption" :face nerd-icons-yellow))
-
-  (laluxx/add-or-update-alist 'nerd-icons-mode-icon-alist
-                              'dired-mode
-                              '(nerd-icons-mdicon "nf-md-folder" :face nerd-icons-yellow))
-
-
-  (laluxx/add-or-update-alist 'nerd-icons-mode-icon-alist
-                              'erc-mode
-                              '(nerd-icons-mdicon "nf-md-chat_processing"))
-
-  (laluxx/add-or-update-alist 'nerd-icons-mode-icon-alist
-                              'hexl-mode
-                              '(nerd-icons-mdicon "nf-md-hexadecimal" :face nerd-icons))
-
-  (laluxx/add-or-update-alist 'nerd-icons-mode-icon-alist
-                              'objdump-mode
-                              '(nerd-icons-faicon "nf-fae-hexagon" :face nerd-icons-red))
-
-  (laluxx/add-or-update-alist 'nerd-icons-mode-icon-alist
-                              'haskell-interactive-mode
-                              '(nerd-icons-faicon "nf-fa-undo" :face nerd-icons-red)))
-
 
 ;;; WINDOW DIVIDER
-(defun set-window-divider-colors ()
+(defun laluxx/set-window-divider-colors ()
+  (interactive)
   (if (display-graphic-p)
       ;; GUI mode - match background color
       (let ((bg-color (face-attribute 'default :background nil t)))
@@ -968,13 +1101,13 @@ Returns the updated value."
 (setq window-divider-default-bottom-width 0)
 
 ;; Set up colors for initial theme
-(set-window-divider-colors)
+(laluxx/set-window-divider-colors)
 
 ;; Update colors when theme changes
 (with-eval-after-load 'consult
   (advice-add 'consult-theme-switcher-dark :after
               (lambda (&rest _)
-                (set-window-divider-colors))))
+                (laluxx/set-window-divider-colors))))
 
 ;; Enable window divider mode
 (window-divider-mode 1)
@@ -1261,6 +1394,7 @@ Returns the updated value."
           ("HACK"       font-lock-constant-face bold)
           ("REVIEW"     font-lock-keyword-face bold)
           ("NOTE"       success bold)
+          ("DONE"       success bold)
           ("IMPORTANT"  success bold)
           ("DEPRECATED" font-lock-doc-face bold)
           ("AFTER" font-lock-constant-face bold)
@@ -1374,51 +1508,13 @@ Returns the updated value."
   (html-mode . emmet-mode))
 
 ;;; ELISP
+
+(setq delete-pair-blink-delay 0)
 (define-key emacs-lisp-mode-map (kbd "C-j") 'eval-last-sexp)
 (define-key input-decode-map [?\C-m] [C-m])
 (define-key emacs-lisp-mode-map (kbd "<C-m>") 'mark-sexp)
 (define-key emacs-lisp-mode-map (kbd "RET") 'newline)
 (define-key emacs-lisp-mode-map (kbd "TAB") 'laluxx/tab-cycle)
-(define-key emacs-lisp-mode-map (kbd "C-c C-n") #'laluxx/next-defun-center)
-(define-key emacs-lisp-mode-map (kbd "C-c C-p") #'laluxx/prev-defun-center)
-
-(defun laluxx/next-defun-center ()
-  "Move point to the beginning of the next actual function definition in elisp.
-Recenter only if the destination point would be outside the visible portion of the window."
-  (interactive)
-  (let ((original-point (point)))
-    ;; Move forward to skip current defun if we're at the start of one
-    (forward-line 1)
-    ;; Search for next defun
-    (while (and (not (eobp))
-                (not (looking-at "^(def")))
-      (forward-line 1))
-    ;; Check if we found a defun
-    (when (not (eobp))
-      (let ((dest-point (point)))
-        ;; Only recenter if the destination point is not visible
-        (when (or (< dest-point (window-start))
-                  (> dest-point (window-end)))
-          (recenter 30))))))
-
-(defun laluxx/prev-defun-center ()
-  "Move point to the beginning of the previous actual function definition in elisp.
-Recenter only if the destination point would be outside the visible portion of the window."
-  (interactive)
-  (let ((original-point (point)))
-    ;; Move to the beginning of the current line
-    (beginning-of-line)
-    ;; Search backwards for defun
-    (while (and (not (bobp))
-                (not (looking-at "^(def")))
-      (forward-line -1))
-    ;; Check if we found a defun
-    (when (not (bobp))
-      (let ((dest-point (point)))
-        ;; Only recenter if the destination point is not visible
-        (when (or (< dest-point (window-start))
-                  (> dest-point (window-end)))
-          (recenter 15))))))
 
 (use-package bicycle
   :ensure t
@@ -1602,7 +1698,7 @@ Recenter only if the destination point would be outside the visible portion of t
 
 ;;; JADE
 
-(add-to-list 'auto-mode-alist '("\\.jade\\'" . rust-mode))
+;; (add-to-list 'auto-mode-alist '("\\.jade\\'" . rust-mode))
 
 (defun my-jade-save-hook ()
   "Run './jade' command if the current buffer is visiting a .jade file."
@@ -1611,6 +1707,7 @@ Recenter only if the destination point would be outside the visible portion of t
     (shell-command (concat "./jade " (shell-quote-argument (buffer-file-name))))))  ; Run the jade command on the file
 
 (add-hook 'after-save-hook 'my-jade-save-hook)
+
 
 
 ;;;; IELM
@@ -1663,21 +1760,53 @@ Recenter only if the destination point would be outside the visible portion of t
 ;; TODO make make a package
 ;; TODO Apply patch in region
 
-(defun compile-dwm-config ()
-  "Compile DWM config after saving config.def.h"
-  (when (string= (buffer-name) "config.def.h")
-    (let ((default-directory (file-name-directory (buffer-file-name))))
-      (compile
-       (concat "echo " (shell-quote-argument (read-passwd "Password: "))
-               " | sudo -S cp config.def.h config.h && echo $? > /tmp/cp_status && "
-               "cat /tmp/cp_status | grep '^0$' > /dev/null && "
-               "sudo -S make install")))))
-
-(add-hook 'after-save-hook #'compile-dwm-config)
-
 
 ;;; FUNCTIONS
 
+;; TODO Make this a package called `ewra'
+;; TODO it doesn't work well with functions with infinite arity
+;; like `lambda' `interactive'...
+(defun laluxx/wrap ()
+  "Smart wrapping of Lisp forms using Emacs' built-in form understanding."
+  (interactive)
+  (if (eq last-command 'laluxx/wrap)
+      (undo)
+    (condition-case nil
+        (delete-pair)
+      (error
+       (save-excursion
+         (let* ((bounds (bounds-of-thing-at-point 'symbol))
+                (sym (when bounds 
+                       (intern-soft (buffer-substring-no-properties 
+                                     (car bounds) (cdr bounds)))))
+                (min-args (when (and sym (functionp sym))
+                            (car (func-arity sym)))))
+           (if (and min-args                        ; It's a function
+                    (not (nth 3 (syntax-ppss))))    ; Not in a string
+               (condition-case nil
+                   (let ((start (car bounds)))
+                     (goto-char (cdr bounds))       ; End of function name
+                     (dotimes (_ min-args)          ; Try to find all required args
+                       (forward-sexp))
+                     (insert ")")
+                     (goto-char start)
+                     (insert "("))
+                 (error                             ; Missing args or invalid syntax
+                  (goto-char (car bounds))
+                  (insert "(")
+                  (goto-char (cdr bounds))
+                  (insert ")")))
+             ;; Not a function or in a string - wrap word
+             (skip-syntax-backward "w")
+             (insert "(")
+             (skip-syntax-forward "w")
+             (insert ")"))))))))
+
+(global-set-key (kbd "C-M-d") 'laluxx/wrap)
+
+
+;; TODO Make sure the end is visible ? (as an option)
+;; TODO pulse the added region ? (as an option)
 (defun laluxx/append-region-to-other-window (start end)
   "Append the current region to the buffer in the other window.
 Ensures exactly one empty line before the appended text if there wasn't one.
@@ -1761,7 +1890,6 @@ The region is specified by START and END positions."
     (kill-new alist-entry)))
 
 (global-set-key (kbd "C-c w") 'laluxx/copy-window)
-
 
 
 (defun laluxx/find-init ()
@@ -3055,6 +3183,7 @@ If no word is under the cursor, move to the next word and kill that word."
  ;; If there is more than one, they won't work right.
  '(package-selected-packages nil))
 
+
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.
@@ -3145,6 +3274,8 @@ If no word is under the cursor, move to the next word and kill that word."
   :config
   (dired-ffmpeg-mode 1))
 
+
+
 (use-package consult-themes
   :load-path "~/.config/emacs/lisp/consult-themes"
   :bind (("C-h t" . consult-dark-themes)
@@ -3157,6 +3288,7 @@ If no word is under the cursor, move to the next word and kill that word."
   (define-key consult-themes-prefix-map (kbd "l") #'consult-light-themes)
   (define-key consult-themes-prefix-map (kbd "u") #'consult-ugly-themes)
   )
+
 
 (use-package objdump
   :load-path "~/.config/emacs/lisp/emacs-objdump-mode")
@@ -3176,6 +3308,9 @@ If no word is under the cursor, move to the next word and kill that word."
 (use-package ebox
   :load-path "~/.config/emacs/lisp/ebox")
 
+(use-package aur-packages
+  :load-path "~/.config/emacs/lisp/aur-packages")
+
 (use-package ikey
   :load-path "~/.config/emacs/lisp/ikey"
   :config (global-set-key (kbd "C-h c") 'ikey-describe-key))
@@ -3187,12 +3322,45 @@ If no word is under the cursor, move to the next word and kill that word."
   (global-set-key (kbd "C-c C-c") 'gclone)
   )
 
+(use-package matematica-mode
+  :load-path "~/.config/emacs/lisp/matematica-mode")
+
+(use-package org-block-icons
+  :load-path "~/.config/emacs/lisp/org-block-icons")
+
+(use-package jade-mode
+  :load-path "~/.config/emacs/lisp/jade-mode")
+
+(use-package smart-space
+  :load-path "~/.config/emacs/lisp/smart-space")
+
+(use-package dired-git-info
+  :load-path "~/.config/emacs/lisp/dired-git-info"
+  )
+
+(use-package dired-incremental
+  :load-path "~/.config/emacs/lisp/dired-incremental")
+
+;; TODO Make it faster
+;; TODO Support more languages
+(use-package hide-comments-mode
+  :load-path "~/.config/emacs/lisp/hide-comments-mode")
+
+(use-package see-mode
+  :load-path "~/.config/emacs/lisp/see-mode")
+
+;; (use-package unicode-tables
+;;   :load-path "~/.config/emacs/lisp/unicode-tables")
+
 ;; (use-package kitty-graphics
 ;;   :load-path "~/.config/emacs/lisp/kiyty-graphics")
 
 (use-package crystal-point
   :load-path "~/.config/emacs/lisp/crystal-point"
   :hook (after-init . crystal-point-enable))
+
+(use-package calfw
+  :ensure t)
 
 (use-package hydra
   :ensure t)

@@ -6,7 +6,7 @@
 (setq initial-scratch-message nil)
 (setq inhibit-startup-message t)
 
-(add-to-list 'default-frame-alist '(background-color . "#1D1F21"))    ;; Tomorrow-night
+(add-to-list 'default-frame-alist '(background-color . "#18181B")) ;; kaolin-dark
 
 (set-face-attribute 'default nil
                     :family "JetBrains Mono Nerd Font"
