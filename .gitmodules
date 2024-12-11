@@ -1,0 +1,72 @@
+[submodule "lisp/doom-dashboard"]
+	path = lisp/doom-dashboard
+	url = https://github.com/laluxx/doom-dashboard.git
+[submodule "lisp/navi"]
+	path = lisp/navi
+	url = https://github.com/laluxx/navi.git
+[submodule "lisp/ewm"]
+	path = lisp/ewm
+	url = https://github.com/laluxx/ewm.git
+[submodule "lisp/badger-theme"]
+	path = lisp/badger-theme
+	url = https://github.com/laluxx/badger-theme.git
+[submodule "lisp/emacs-objdump-mode"]
+	path = lisp/emacs-objdump-mode
+	url = https://github.com/laluxx/emacs-objdump-mode.git
+[submodule "lisp/r2-mode"]
+	path = lisp/r2-mode
+	url = https://github.com/laluxx/r2-mode.git
+[submodule "lisp/dired-auto-readme"]
+	path = lisp/dired-auto-readme
+	url = https://github.com/laluxx/dired-auto-readme.git
+[submodule "lisp/dired-image-preview"]
+	path = lisp/dired-image-preview
+	url = https://github.com/laluxx/dired-image-preview.git
+[submodule "lisp/org-block-icons"]
+	path = lisp/org-block-icons
+	url = https://github.com/laluxx/org-block-icons.git
+[submodule "lisp/dired-two-step"]
+	path = lisp/dired-two-step
+	url = https://github.com/laluxx/dired-two-step.git
+[submodule "lisp/key-echo-mode"]
+	path = lisp/key-echo-mode
+	url = https://github.com/laluxx/key-echo-mode.git
+[submodule "lisp/matematica-mode"]
+	path = lisp/matematica-mode
+	url = https://github.com/laluxx/matematica-mode.git
+[submodule "lisp/msh"]
+	path = lisp/msh
+	url = https://github.com/laluxx/msh.git
+[submodule "lisp/activate-emacs"]
+	path = lisp/activate-emacs
+	url = https://github.com/laluxx/activate-emacs.git
+[submodule "lisp/ebox"]
+	path = lisp/ebox
+	url = https://github.com/laluxx/ebox.git
+[submodule "lisp/emacs-kaolin-themes"]
+	path = lisp/emacs-kaolin-themes
+	url = https://github.com/laluxx/emacs-kaolin-themes.git
+[submodule "lisp/ikey"]
+	path = lisp/ikey
+	url = https://github.com/laluxx/ikey.git
+[submodule "lisp/gclone"]
+	path = lisp/gclone
+	url = https://github.com/laluxx/gclone.git
+[submodule "lisp/persistent-scratch"]
+	path = lisp/persistent-scratch
+	url = https://github.com/laluxx/persistent-scratch.git
+[submodule "lisp/consult-themes"]
+	path = lisp/consult-themes
+	url = https://github.com/laluxx/consult-themes.git
+[submodule "lisp/dired-ffmpeg"]
+	path = lisp/dired-ffmpeg
+	url = https://github.com/laluxx/dired-ffmpeg.git
+[submodule "lisp/aur-packages"]
+	path = lisp/aur-packages
+	url = https://github.com/laluxx/ikey.git
+[submodule "lisp/crystal-point"]
+	path = lisp/crystal-point
+	url = https://github.com/laluxx/crystal-point.git
+[submodule "lisp/hide-comments-mode"]
+	path = lisp/hide-comments-mode
+	url = https://github.com/laluxx/hide-comments-mode.git
