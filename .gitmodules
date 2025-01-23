@@ -64,6 +64,6 @@
 [submodule "lisp/r2-mode"]
 	path = lisp/r2-mode
 	url = https://github.com/laluxx/r2-mode.git
-[submodule "lisp/sbadger-theme"]
-	path = lisp/sbadger-theme
-	url = https://github.com/laluxx/sbadger-theme.git
+[submodule "lisp/badger-theme"]
+	path = lisp/badger-theme
+	url = https://github.com/laluxx/badger-theme.git
