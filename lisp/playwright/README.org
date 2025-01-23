@@ -1,0 +1,4 @@
+#+TITLE: Playwright
+#+AUTHOR: Laluxx
+
+[[./demo.gif]]

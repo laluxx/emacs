@@ -1,0 +1,11 @@
+*.elc
+.cask
+ert-profile
+dir
+/visual-replace-autoloads.el
+/dist
+/.eldev
+/Eldev-local
+/docs/build
+/visual-replace.info
+/venv
